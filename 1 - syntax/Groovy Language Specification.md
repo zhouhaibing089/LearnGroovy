@@ -29,7 +29,7 @@ interpolation(插入,注入)
     map."Simson-${firstname}" = "Homer Simson"
 
 单引号字符串为String类型
-双引号字符串为GString类型
+双引号字符串为GString类型(若有Interpolation)
 三单(双)引号字符串支持多行
 
 String的两个方法: `stripIndent`和`stripMargin`
@@ -78,4 +78,61 @@ HelloWorld
 
 ```
 
+在字符串插入过程中,任何expression都可以(除了triple string),也可以是statement. 总结来说像下面这样:
+
+```groovy
+${expression or statements}
+$a.b.c.d
+```
+
+像`$name.method()`会被解释成`${name.method}()`
+
+若需要转义`$`,则使用反斜杠
+
+```groovy
+assert '${name}' == "\${name}"
+```
+
+需要注意的是`${->}`是一种闭包形式
+
+```groovy
+def parentheness = "1 + 2 == ${-> 3}"
+assert parentheness == '1 + 2 ==3'
+def param = "1 + 2 == ${w -> w << 3}"
+assert param == '1 + 2 == 3'
+```
+
+闭包有一个强大的地方在于lazy特性
+
+下面这段代码比较清晰地解释了这个特性
+
+```groovy
+def number = 1
+def eagerGString = "value == ${number}"
+def lazyGString = "value == ${ -> number }"
+
+assert eagerGString == "value == 1"
+assert lazyGString == "value == 1"
+
+number = 2
+
+assert eagerGString == "value == 1"
+assert lazyGString == "value == 2"
+```
+
+也就是说每次取lazyGString的值时都会重新计算一次
+
+一个embedded closure expression只能接受0个或1个参数
+
+GString和String的hashcode值不一样，因此像map这样的结构无法混合使用GString和String
+
+**slash string**是多行的,可以使用interpolated特性
+
+声明字符类型的三种方式:
+
+*   `char c1 = 'A'`
+*   `def c2 = 'B' as char`
+*   `def c3 = (char)'C'`
+
+声明数字时使用def的话会使用最合适大小的类型
 
