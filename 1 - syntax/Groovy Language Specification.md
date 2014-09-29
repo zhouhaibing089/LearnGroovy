@@ -195,3 +195,56 @@ assert name == null
 user.name   // 实际调用的是user.getName()
 user.@name  // 直接引用字段值
 ```
+
+对于方法也可以取得引用,类型为Closure
+
+
+```groovy
+def str = 'example of method reference'
+def fun = str.&toUpperCase
+def upper = fun()
+assert upper == str.toUpperCase()
+```
+
+方法的引用绑定着接收者和方法名,并且参数解析是在运行时进行的,因此对于Overloading并不会产生歧义.
+
+```groovy
+def doSomething(String x) {str.toUpperCase()}
+def doSomething(Integer x) {2 * x}
+def reference = this.&doSomething
+assert reference('foo') == 'FOO'
+assert reference(123) == 246
+```
+
+在Groovy中,可以使用`~`方便地创建一个pattern
+
+```groovy
+def p = ~/foo/
+assert p instanceof Pattern
+```
+
+通常使用slash string,但其实下面这些情况都可以:
+
+```groovy
+p = ~'foo'
+p = ~"foo"
+p = ~$/foo/$
+p = ~"${foo}"
+```
+
+定义Matcher可以使用`=～`操作符(Find Operator)
+
+```groovy
+def text = "some text to match"
+def m = text =~ /match/
+assert m instanceof Matcher
+```
+
+严格匹配`==~`(Match Operator)
+
+```groovy
+m = text ==~ /match/
+assert m instanceof Boolea
+```
+
+
