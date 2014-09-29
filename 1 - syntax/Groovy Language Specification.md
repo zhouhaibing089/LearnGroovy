@@ -166,11 +166,32 @@ Array和List的写法一样,如果你要声明Array的话就需要把类型补�
 String[] arrStr = ['Ananas', 'Banana', 'Kiwi']
 ```
 
+简单的Map声明形式:
 
+```groovy
+def colors = [red: '#FF0000', greed: '#00FF00', blue: '#0000FF']
+```
 
+使用的key默认是String类型,默认的Map实现类为LinkedHashMap
 
+###Operators
 
+和Java的操作符没有太多区别,(只是有点像Javascript对String类型也可以转成布尔值,不知道这话准不准确)
+还有Elvis Operator对于?:形式有些情况下带来方便
 
+关于对象操作符,下面这段代码有点意思:
 
+```groovy
+def person = Person.find {it.id = 123}
+def name = person?.name
+assert name == null
+```
 
+第二行代码是null-safe的
 
+对象属性的取得的话
+
+```groovy
+user.name   // 实际调用的是user.getName()
+user.@name  // 直接引用字段值
+```
